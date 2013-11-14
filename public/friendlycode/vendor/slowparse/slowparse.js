@@ -952,7 +952,7 @@ var Slowparse = (function() {
                              valueEnd, value);
       }
       //Add a new validator to check if there is mixed active content in css value
-      if (value.match(/,?\s*url\([^)]+\)/)) {
+      if (checkMixedContent && value.match(/,?\s*url\([^)]+\)/)) {
         throw new ParseError("CSS_MIXED_ACTIVECONTENT", this, property, propertyStart, value, valueStart);
       }
       if (next === ';') {
