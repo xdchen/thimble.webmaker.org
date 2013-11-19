@@ -319,7 +319,7 @@ var Slowparse = (function() {
       };
     },
 	// Add a new error type for mixed active content in css values
-    CSS_MIXED_ACTIVECONTENT: function(parser, property, propertyStart, value, valueStart) {
+    CSS_MIXED_ACTIVECONTENT: function(parser, property, propertyStart, value, valueStart, valueEnd) {
       return {
         cssProperty: {
           property: property,
@@ -329,7 +329,7 @@ var Slowparse = (function() {
         cssValue: {
           value: value,
           start: valueStart,
-          end: valueStart + value.length
+          end: valueEnd
         }
       };
     },
@@ -952,8 +952,9 @@ var Slowparse = (function() {
                              valueEnd, value);
       }
       //Add a new validator to check if there is mixed active content in css value
-      if (checkMixedContent && value.match(/,?\s*url\(\s*['"]?http://.+\)/)) {
-        throw new ParseError("CSS_MIXED_ACTIVECONTENT", this, property, propertyStart, value, valueStart);
+      if (checkMixedContent && value.match(/,?\s*url\(\s*['"]?http:\/\/.+\)/)) {
+        var urlStart = valueStart + value.indexOf('url');
+        throw new ParseError("CSS_MIXED_ACTIVECONTENT", this, property, propertyStart, value, urlStart, valueEnd);
       }
       if (next === ';') {
         // This is normal CSS rule termination; try to read a new
